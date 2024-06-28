@@ -3,8 +3,8 @@ from numpy import exp, array, random, dot
 
 class NeuronLayer():
     def __init__(self, number_of_neurons, number_of_inputs_per_neuron):
-#       self.synaptic_weights = 2 * random.random((number_of_inputs_per_neuron, number_of_neurons)) - 1
-      self.synaptic_weights = 0 * random.random((number_of_inputs_per_neuron, number_of_neurons)) + 0.1
+      self.synaptic_weights = 2 * random.random((number_of_inputs_per_neuron, number_of_neurons)) - 1
+###   self.synaptic_weights = 0 * random.random((number_of_inputs_per_neuron, number_of_neurons)) + 0.1
        
 class NeuralNetwork():
     def __init__(self, layer1, layer2):
@@ -32,9 +32,6 @@ class NeuralNetwork():
             # Pass the training set through our neural network
             output_from_layer_1, output_from_layer_2 = self.think(training_set_inputs)
 
-#            print("out1",output_from_layer_1)
-#            print("out2",output_from_layer_2)
-
             # Calculate the error for layer 2 (The difference between the desired output
             # and the predicted output).
             layer2_error = training_set_outputs - output_from_layer_2
@@ -54,13 +51,15 @@ class NeuralNetwork():
             self.layer1.synaptic_weights += layer1_adjustment
             self.layer2.synaptic_weights += layer2_adjustment
 
-#           print("layer2_error ",layer2_error) 
-#           print("layer2_delta ",layer2_delta) 
-#           print("layer1_error ",layer1_error) 
-#           print("layer1_delta ",layer1_delta) 
-#           print("layer1_adjustment ",layer1_adjustment) 
-#           print("layer2_adjustment ",layer2_adjustment) 
-#           print("it = ",iteration,self.layer2.synaptic_weights.T) 
+#            print("out1",output_from_layer_1)
+#            print("out2",output_from_layer_2)
+#            print("layer2_error\n",layer2_error) 
+#            print("layer2_delta\n",layer2_delta) 
+#            print("layer1_error\n",layer1_error) 
+#            print("layer1_delta\n",layer1_delta) 
+#            print("layer1_adjustment\n",layer1_adjustment) 
+#            print("layer2_adjustment\n",layer2_adjustment) 
+#            print("it = ",iteration,self.layer2.synaptic_weights.T) 
 
     # The neural network thinks.
     def think(self, inputs):

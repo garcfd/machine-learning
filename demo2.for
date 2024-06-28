@@ -43,7 +43,7 @@ C-----random weights
       endif
 
 C-----specific random weights (true/false)
-      if (.false.) then
+      if (.true.) then
       layer1(1,:) = [-0.16595599, 0.44064899,-0.99977125,-0.39533485]
       layer1(2,:) = [-0.70648822,-0.81532281,-0.62747958,-0.30887855]
       layer1(3,:) = [-0.20646505, 0.07763347,-0.16161097, 0.370439  ]
@@ -51,7 +51,7 @@ C-----specific random weights (true/false)
       endif
 
 C-----uniform weights (true/false)
-      if (.true.) then
+      if (.false.) then
         layer1 = 0.1 
         layer2 = 0.1
       endif
@@ -65,6 +65,7 @@ C-----uniform weights (true/false)
 
 C-----TRAINING the neural network
       open(10,file="output.dat")
+
       do it = 1,10000
 
         do i = 1,nt ! loop over number of rows of input data
@@ -106,20 +107,22 @@ C-------debugging output
           write(6,*) "delta2",delta2(i)
         enddo
         do i = 1,nt
-          write(6,'(1X,A,4F12.7)') "error1",error1(i,:)
+          write(6,10) "error1",error1(i,:)
         enddo
         do i = 1,nt
-          write(6,'(1X,A,4F12.7)') "delta1",delta1(i,:)
+          write(6,10) "delta1",delta1(i,:)
         enddo
         endif
 
+   10   format(1X,A,4F12.7)
+
 C-------adjust weights layer1
         do i = 1,3 ! weights
-          adjust1(i,:) = dot_product(tsi_trans(i,:), delta1(:,i) )
           do j = 1,4 ! neurons
-            layer1(i,j) = layer1(i,j) + adjust1(i,j)
+            adjust1(i,j) = dot_product(tsi_trans(i,:),delta1(:,j))
+            layer1(i,j)  = layer1(i,j) + adjust1(i,j)
           enddo
-C         write(6,'(1X,A,4F12.7)') "adjust1 ", adjust1(i,:)
+C         write(6,10) "adjust1 ", adjust1(i,:)
         enddo
 
         sigmoid1_trans = transpose(sigmoid1)
@@ -128,15 +131,17 @@ C-------adjust weights layer2
         do i = 1,4 ! weights
           adjust2(i) = dot_product(sigmoid1_trans(i,:),delta2)
           layer2(i)  = layer2(i) + adjust2(i)
+C         write(6,10) "adjust2 ", adjust2(i)
         enddo
-C       write(6,'(1X,A,4F12.7)') "adjust2 ", adjust2
 
 C-------data to screen and output file
-        write(6, '(I5,4F9.4)') it,layer2
-        write(10,'(I5,4F9.4)') it,layer2
+
+C        write(6, '(I5,16F9.4)') it,layer1,layer2
+        write(10,'(I5,16F9.4)') it,layer1,layer2
 
       enddo
-      close(10)
+
+      close(10) ! output file
 
       write(6,*)"New synaptic weights after training: "
       write(6,'(1X,A,4F9.4)')"layer1 = ",(layer1(1,i),i=1,4)
@@ -153,8 +158,8 @@ C-----TESTING the neural network with a new input
       output2(i)  = dot_product(sigmoid1(i,:),layer2)
       test_output = 1.0 / (1.0 + exp( -output2(i) ))
 
-      write(6,*)"test_input=", test_input  
-      write(6,*)"test_output=", test_output  
+      write(6,*)             "test_input=",  test_input  
+      write(6,'(1X,A,F12.8)')"test_output=", test_output  
 
       end program
 
