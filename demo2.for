@@ -1,10 +1,11 @@
-
+C Ref:
+C https://github.com/PadmaJyothi-U/Deep-Learning/blob/main/multi_layered_neural_network.ipynb
+C
       program main
       implicit none
 
       integer i,j,it
       INTEGER, PARAMETER :: nt = 7 ! number of training data
-
 
       real tsi(nt,3),       tso(nt),       tsi_trans(3,nt)
       real output1(nt,4),   output2(nt)
@@ -14,8 +15,8 @@
       real error1(nt,4),    error2(nt)
       real delta1(nt,4),    delta2(nt)
       real adjust1(3,4),    adjust2(4)
-
       real test_input(3),test_output
+      real L1sum,L2sum
       
 
       tsi(1,:) = [0, 0, 1]
@@ -117,10 +118,12 @@ C-------debugging output
    10   format(1X,A,4F12.7)
 
 C-------adjust weights layer1
+        L1sum = 0.0
         do i = 1,3 ! weights
           do j = 1,4 ! neurons
             adjust1(i,j) = dot_product(tsi_trans(i,:),delta1(:,j))
             layer1(i,j)  = layer1(i,j) + adjust1(i,j)
+            L1sum = L1sum + abs(layer1(i,j))
           enddo
 C         write(6,10) "adjust1 ", adjust1(i,:)
         enddo
@@ -128,16 +131,18 @@ C         write(6,10) "adjust1 ", adjust1(i,:)
         sigmoid1_trans = transpose(sigmoid1)
 
 C-------adjust weights layer2
+        L2sum = 0.0
         do i = 1,4 ! weights
           adjust2(i) = dot_product(sigmoid1_trans(i,:),delta2)
           layer2(i)  = layer2(i) + adjust2(i)
+          L2sum = L2sum + abs(layer2(i))
 C         write(6,10) "adjust2 ", adjust2(i)
         enddo
 
 C-------data to screen and output file
 
-C        write(6, '(I5,16F9.4)') it,layer1,layer2
-        write(10,'(I5,16F9.4)') it,layer1,layer2
+        write(6, '(I5,2F9.4)') it,L1sum,L2sum
+        write(10,'(I5,2F9.4)') it,L1sum,L2sum
 
       enddo
 

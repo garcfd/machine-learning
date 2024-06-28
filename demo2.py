@@ -1,3 +1,7 @@
+### Ref:
+### https://github.com/PadmaJyothi-U/Deep-Learning/blob/main/multi_layered_neural_network.ipynb
+###
+
 from numpy import exp, array, random, dot
 
 
